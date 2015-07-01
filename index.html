@@ -139,6 +139,7 @@ function updateData(){
       .call(yAxis);
 
     var arr = [];
+    var tally = [];
     // Change the squares
     svg.selectAll(".point")
       .attr("d", d3.svg.symbol().type("square").size([500]))
@@ -146,16 +147,19 @@ function updateData(){
             
             var search = (d.condition + "," + d.severity);
             var index = arr.indexOf(search);
-            //console.log(arr + "+" + search + "+" + index );
             
+            //console.log(arr + "+" + search + "+" + index );
+
             if(index == -1){
               arr.push(search);
               position = "translate(" + x(d.condition) + "," + y(d.severity) + ")";
 
             } else {
               position = "translate(" + (x(d.condition)+40) + "," + y(d.severity) + ")";
-              console.log(arr + "+" + search + "+" + index );
+              tally.push((d.condition + "," + d.severity + "," + index));
+              //console.log(arr + "+" + search + "+" + index );
             };
+            console.log(tally);
             return position;             
         })
       .duration(750);
