@@ -73,7 +73,9 @@ d3.csv("data.csv", type, function(error, data) {
   if (error) throw error;
   
   // Scale the range of the data
-  x.domain(d3.extent(data, function(d) { return d.date; }));
+  x.domain(d3.extent(data, function(d) { 
+    //console.log(d.date);
+    return parseInt(d.date); }));
   //x.domain(data.map(function(d) { return d.date; }));
   y.domain([0, 4]);
 
@@ -138,26 +140,35 @@ function updateData(){
       .duration(750)
       .call(yAxis);
 
-    var arr = [];
-    var tally = [];
+    var arr = []; // array for holding all the datapoints
+    var tally = []; // array for storing the duplicates + count of duplicates
     // Change the squares
     svg.selectAll(".point")
       .attr("d", d3.svg.symbol().type("square").size([500]))
       .attr("transform", function(d) { 
             
-            var search = (d.condition + "," + d.severity);
-            var index = arr.indexOf(search);
-            
-            //console.log(arr + "+" + search + "+" + index );
+            var current = (d.condition + "," + d.severity); // current data point
+            var index = arr.indexOf(current); // get the index of current data point in array arr
 
-            if(index == -1){
-              arr.push(search);
+            if(index == -1){ // if index is -1, then no match found. unique data point
+              arr.push(current); // push point onto array
               position = "translate(" + x(d.condition) + "," + y(d.severity) + ")";
 
             } else {
-              position = "translate(" + (x(d.condition)+40) + "," + y(d.severity) + ")";
-              tally.push((d.condition + "," + d.severity + "," + index));
-              //console.log(arr + "+" + search + "+" + index );
+              tally.push(current);
+              var tallylen = tally.length;
+              var tindex = tally.indexOf(current);
+              for (var i = 0; i < tallylen; i++){
+                console.log(tindex);
+                var c = 0;
+                if(c == tindex){
+                  position = "translate(" + (x(d.condition)+(40*(i+1))) + "," + y(d.severity) + ")";
+                } else {
+                  c = tindex;
+                  position = "translate(" + (x(d.condition)+(40*(i+1-tindex))) + "," + y(d.severity) + ")";
+                };
+                
+              }
             };
             console.log(tally);
             return position;             
@@ -182,7 +193,7 @@ function revertData(){
       if (error) throw error;
     
     // Scale the range of data again  
-    x.domain(d3.extent(data, function(d) { return d.date; }));
+    x.domain(d3.extent(data, function(d) { return parseInt(d.date); }));
     y.domain([0, 4]);
 
     // Select the section we want to apply our changes to
