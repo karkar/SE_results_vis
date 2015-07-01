@@ -195,16 +195,17 @@ function updateData(){
               position = "translate(" + x(d.condition) + "," + y(d.severity) + ")";
 
             } else {
-              tally.push(current);
+              tally.push(current); // add the duplicate to the array
               var tallylen = tally.length;
               var tindex = tally.indexOf(current);
-              for (var i = 0; i < tallylen; i++){
-                console.log(tindex);
-                var c = 0;
-                if(c == tindex){
+              for (var i = 0; i < tallylen; i++){ // loop through the duplicate data point array
+                //console.log(tindex);
+                var c = 0; // initiating c to the first tindex = 0
+                if(c == tindex){ // tindex will return the same value for similar data points
                   position = "translate(" + (x(d.condition)+(40*(i+1))) + "," + y(d.severity) + ")";
-                } else {
+                } else { // when a new data point is pushed the t index increases. this resets the position guide
                   c = tindex;
+                  // resetting the position by subtracting the tindex from the duplicate counter
                   position = "translate(" + (x(d.condition)+(40*(i+1-tindex))) + "," + y(d.severity) + ")";
                 };
                 
