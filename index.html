@@ -27,8 +27,12 @@
     <div id="option">
     <input name="updateButton" 
            type="button" 
-           value="Update" 
+           value="Frequency" 
            onclick="updateData()" />
+    <input name="revertButton" 
+           type="button" 
+           value="Temporal" 
+           onclick="revertData()" />
     </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script>
@@ -144,6 +148,51 @@ function updateData(){
     });
 
 }
+
+// ** Revert data section (Called from the onclick)
+function revertData(){
+
+    var x = d3.scale.linear()
+    .range([0, width]);
+
+    var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+
+    // Get the data again
+    d3.csv("data.csv", type, function(error, data) {
+      if (error) throw error;
+    
+    // Scale the range of data again  
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, 4]);
+
+    // Select the section we want to apply our changes to
+    var svg = d3.select("body").transition();
+
+    // Make the changes
+    // Change X Axis
+    svg.select(".x.axis") 
+      .duration(750)
+      .call(xAxis);
+
+    // Change Y Axis
+    svg.select(".y.axis")
+      .duration(750)
+      .call(yAxis);
+
+    // Change the squares
+    svg.selectAll(".point")
+      .attr("d", d3.svg.symbol().type("square").size([500]))
+      .attr("transform", function(d) { 
+          return "translate(" + x(d.date) + "," + y(d.severity) + ")"; 
+      })
+      .duration(750);
+    });
+
+}
+
 
 
 function type(d) {
