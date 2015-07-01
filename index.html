@@ -21,6 +21,14 @@
   shape-rendering: crispEdges;
 }
 
+.point blue{
+  fill: steelblue;
+}
+
+.point green{
+  fill: green;
+}
+
 .d3-tip {
   line-height: 1;
   font-weight: bold;
@@ -70,6 +78,8 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+// Hard coding values of colors
+var color = d3.scale.ordinal().range(['#74c476', ' #6baed6']); // green and blue respectively
 
 // Set the ranges
 var x = d3.scale.linear()
@@ -83,12 +93,14 @@ var y = d3.scale.linear()
 // Define the axes
 var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("bottom");
+    .orient("bottom")
+    .tickPadding(15);
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
-    .ticks(5);
+    .ticks(5)
+    .tickPadding(15);
 
 var tip = d3.tip()
   .attr('class', 'd3-tip')
@@ -127,12 +139,12 @@ d3.csv("data.csv", type, function(error, data) {
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
-    /*.append("text")
+    .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("severity");*/
+      .text("Severity");
 
   // Add the squares
   svg.selectAll(".point")
@@ -143,6 +155,7 @@ d3.csv("data.csv", type, function(error, data) {
         .attr("transform", function(d) { 
             return "translate(" + x(d.date) + "," + y(d.severity) + ")"; 
         })
+        .style("fill", function(d){return color(d.condition)})
         .on('mouseover', tip.show)
         .on('mouseout', tip.hide);
 });
@@ -155,7 +168,8 @@ function updateData(){
 
     var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("bottom");
+    .orient("bottom")
+    .tickPadding(15);
 
 
     // Get the data again
@@ -192,7 +206,7 @@ function updateData(){
 
             if(index == -1){ // if index is -1, then no match found. unique data point
               arr.push(current); // push point onto array
-              position = "translate(" + (x(d.condition)+(900/4)-35) + "," + y(d.severity) + ")";
+              position = "translate(" + (x(d.condition)+(900/4)-33) + "," + y(d.severity) + ")";
 
             } else {
               tally.push(current); // add the duplicate to the array
@@ -202,11 +216,11 @@ function updateData(){
                 //console.log(tindex);
                 var c = 0; // initiating c to the first tindex = 0
                 if(c == tindex){ // tindex will return the same value for similar data points
-                  position = "translate(" + (x(d.condition)+(900/4)-35+(40*(i+1))) + "," + y(d.severity) + ")";
+                  position = "translate(" + (x(d.condition)+(900/4)-33+(40*(i+1))) + "," + y(d.severity) + ")";
                 } else { // when a new data point is pushed the t index increases. this resets the position guide
                   c = tindex;
                   // resetting the position by subtracting the tindex from the duplicate counter
-                  position = "translate(" + (x(d.condition)+(900/4)-35+(40*(i+1-tindex))) + "," + y(d.severity) + ")";
+                  position = "translate(" + (x(d.condition)+(900/4)-33+(40*(i+1-tindex))) + "," + y(d.severity) + ")";
                 };
                 
               }
@@ -226,7 +240,8 @@ function revertData(){
 
     var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("bottom");
+    .orient("bottom")
+    .tickPadding(15)    ;
 
 
     // Get the data again
