@@ -94,7 +94,7 @@ var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
-    return "Date: " + d.date + "<br/><span style='color:red'>Severity: " + d.severity + "</span><br/>Condition: " + d.condition;
+    return "Day: " + d.date + "<br/><span style='color:red'>Severity: " + d.severity + "</span><br/>Condition: " + d.condition;
   })
 
 // Add the svg canvas
@@ -192,7 +192,7 @@ function updateData(){
 
             if(index == -1){ // if index is -1, then no match found. unique data point
               arr.push(current); // push point onto array
-              position = "translate(" + x(d.condition) + "," + y(d.severity) + ")";
+              position = "translate(" + (x(d.condition)+(900/4)-35) + "," + y(d.severity) + ")";
 
             } else {
               tally.push(current); // add the duplicate to the array
@@ -202,11 +202,11 @@ function updateData(){
                 //console.log(tindex);
                 var c = 0; // initiating c to the first tindex = 0
                 if(c == tindex){ // tindex will return the same value for similar data points
-                  position = "translate(" + (x(d.condition)+(40*(i+1))) + "," + y(d.severity) + ")";
+                  position = "translate(" + (x(d.condition)+(900/4)-35+(40*(i+1))) + "," + y(d.severity) + ")";
                 } else { // when a new data point is pushed the t index increases. this resets the position guide
                   c = tindex;
                   // resetting the position by subtracting the tindex from the duplicate counter
-                  position = "translate(" + (x(d.condition)+(40*(i+1-tindex))) + "," + y(d.severity) + ")";
+                  position = "translate(" + (x(d.condition)+(900/4)-35+(40*(i+1-tindex))) + "," + y(d.severity) + ")";
                 };
                 
               }
